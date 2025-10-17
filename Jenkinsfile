@@ -2,10 +2,10 @@ pipeline {
   agent any
   tools { 
     maven 'Maven3'
-    jdk 'jdk17'
+    jdk 'JDK17'
   }
   environment {
-    TOMCAT_URL = "http://44.222.213.109:8081/manager/text"
+    TOMCAT_URL = "http://44.211.121.10:8081/manager/text"
     APP_NAME = "demo-webapp"
     WAR_FILE = "target/demo-webapp-1.0-SNAPSHOT.war"
   }
@@ -48,7 +48,7 @@ pipeline {
       steps {
         sleep 5
         sh '''
-          curl -f http://44.222.213.109:8081/$APP_NAME/ || \
+          curl -f http://44.211.121.10:8081/$APP_NAME/ || \
           (echo "Smoke test failed" && exit 1)
         '''
       }
