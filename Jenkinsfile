@@ -1,12 +1,13 @@
 pipeline {
   agent any
   tools { 
-    maven 'Maven3' // must match your Jenkins Global Tool config
-    jdk 'jdk17'     // must match your Jenkins Global Tool config
+    maven 'Maven3'
+    jdk 'jdk17'
   }
   environment {
-    TOMCAT_URL = "http://44.222.213.109:8081/manager/text" // use /manager/text for scriptable deploy
-    APP_NAME = "demo-webapp" // context path w/o leading slash
+    TOMCAT_URL = "http://44.222.213.109:8081/manager/text"
+    APP_NAME = "demo-webapp"
+    WAR_FILE = "target/demo-webapp-1.0-SNAPSHOT.war" // <- correct WAR name
   }
   stages {
     stage('Checkout') {
@@ -27,16 +28,16 @@ pipeline {
       steps {
         script {
           withCredentials([usernamePassword(credentialsId: 'tomcat-manager', usernameVariable: 'TOMCAT_USER', passwordVariable: 'TOMCAT_PASS')]) {
-            // Undeploy previous app (if exists)
+            // Undeploy previous app (ignore errors if not exist)
             sh """
-              curl --silent --show-error --fail -u "$TOMCAT_USER:$TOMCAT_PASS" \
-                "${TOMCAT_URL}/undeploy?path=/${APP_NAME}" || true
+              curl --silent --show-error --fail -u '${TOMCAT_USER}:${TOMCAT_PASS}' \
+                '${TOMCAT_URL}/undeploy?path=/${APP_NAME}' || true
             """
             // Deploy new WAR
             sh """
-              curl --silent --show-error --fail -u "$TOMCAT_USER:$TOMCAT_PASS" \
-                -T "target/${APP_NAME}.war" \
-                "${TOMCAT_URL}/deploy?path=/${APP_NAME}&update=true"
+              curl --silent --show-error --fail -u '${TOMCAT_USER}:${TOMCAT_PASS}' \
+                -T '${WAR_FILE}' \
+                '${TOMCAT_URL}/deploy?path=/${APP_NAME}&update=true'
             """
           }
         }
