@@ -7,6 +7,6 @@
 </head>
 <body>
   <h1>Demo Webapp</h1>
-  <p>Namaskar — this is the demo index.jsp. Try <a href="hello">/hello</a> to see the servlet.</p>
+  <p>Hello — this is the demo index.jsp. Try <a href="hello">/hello</a> to see the servlet.</p>
 </body>
 </html>
